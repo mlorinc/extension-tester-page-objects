@@ -9,7 +9,7 @@
     "out/**/*.d.ts"
   ],
   "scripts": {
-    "prepack": "npm run build",
+    "prepack": "rm -rf out && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"
   },

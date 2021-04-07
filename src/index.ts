@@ -3,6 +3,7 @@ export * from './locators/locators';
 export * from './locators/loader';
 
 export * from './components/menu/Menu';
+export * from './components/menu/MenuItem';
 export * from './components/menu/TitleBar';
 export * from './components/menu/WindowControls';
 
@@ -48,12 +49,19 @@ export * from './components/editor/settings/Setting';
 export * from './components/editor/DiffEditor';
 export * from './components/editor/WebView';
 
-export { INotification as Notification } from './components/workbench/Notification';
+export * from './components/workbench/Notification';
 export * from './components/workbench/NotificationsCenter';
 export * from './components/workbench/input/Input';
 export * from './components/workbench/input/InputBox';
 export * from './components/workbench/Workbench';
 
 export * from './components/dialog/ModalDialog';
+export * from './components/dialog/NativeDialog';
+export * from './components/dialog/OpenDialog';
+
+export * from './conditions/until';
+export * from './conditions/TimeoutPromise';
+export * from './conditions/Repeat';
+
 export * from './SeleniumBrowser';
 export * from './TestRunner';

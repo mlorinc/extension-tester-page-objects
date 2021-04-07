@@ -1,12 +1,16 @@
 import {
+    Button,
     By,
     Key,
     Locator,
     until,
     WebDriver,
-    WebElement
+    WebElement,
+    WebElementPromise
 } from 'selenium-webdriver';
-import { SeleniumBrowser } from '../SeleniumBrowser';
+import { repeat, StopRepeat } from '../conditions/Repeat';
+import { ExtestUntil } from '../conditions/until';
+import { getTimeout, SeleniumBrowser } from '../SeleniumBrowser';
 
 /**
  * Default wrapper for webelement
@@ -17,39 +21,38 @@ export abstract class AbstractElement extends WebElement {
     protected static driver: WebDriver;
     protected static locators: Object;
     protected static versionInfo: { version: string, browser: string };
-    protected enclosingItem: WebElement;
+    protected enclosingItem!: WebElement;
 
     /**
      * Constructs a new element from a Locator or an existing WebElement
-     * @param base WebDriver compatible Locator for the given element or a reference to an existing WeBelement
+     * @param base WebDriver compatible Locator for the given element or a reference to an existing WebElement
      * @param enclosingItem Locator or a WebElement reference to an element containing the element being constructed
      * this will be used to narrow down the search for the underlying DOM element
      */
     constructor(base: Locator | WebElement, enclosingItem?: WebElement | Locator) {
         try {
-        let item: WebElement = AbstractElement.driver.findElement(By.css('html'));
-        if (!enclosingItem) {
-            enclosingItem = item;
-        }
-
-        if (enclosingItem instanceof WebElement) {
-            item = enclosingItem;
-        } else {
-            item = AbstractElement.driver.findElement(enclosingItem);
-        }
-
-        if (base instanceof WebElement) {
-            super(AbstractElement.driver, base.getId());
-        } else {
-            super(
-                AbstractElement.driver,
-                item.findElement(base).getId()
-            );
-        }
-        this.enclosingItem = item;
+            if (base instanceof WebElement) {
+                super(SeleniumBrowser.instance.driver, base.getId());
+                this.enclosingItem = findParent(enclosingItem);
+            }
+            else {
+                super(
+                    SeleniumBrowser.instance.driver,
+                    findElement(enclosingItem, base)
+                        .then(([id, parent]) => {
+                            this.enclosingItem = parent;
+                            return id;
+                        })
+                        .catch((e) => {
+                            e.message = `${e.message}. Called from "${this.constructor.name}".`
+                            throw e;
+                        })
+                );
+            }
         }
         catch (e) {
-            throw new Error(`${e} - ${base?.constructor?.name || null}(WebElement:${base instanceof WebElement}) | ${enclosingItem?.constructor?.name || null}(WebElement:${enclosingItem instanceof WebElement})`);
+            e.message = errorHelper(e, base, enclosingItem);
+            throw e;
         }
     }
 
@@ -59,41 +62,21 @@ export abstract class AbstractElement extends WebElement {
      * @returns thenable self reference
      */
     async wait(timeout?: number): Promise<this> {
-        await this.getDriver().wait(until.elementIsVisible(this), timeout || await SeleniumBrowser.instance.getImplicitTimeout());
+        await this.getDriver().wait(until.elementIsVisible(this), getTimeout(timeout));
         return this;
     }
 
-    async waitInteractive(timeout?: number): Promise<this> {
-        await this.getDriver().wait(async () => {
-            try {
-                return await this.isDisplayed() && await this.isEnabled();
-            }
-            catch {
-                return false;
-            }
-        }, timeout || await SeleniumBrowser.instance.getImplicitTimeout(), `${this.constructor.name} interactivity wait check timed out.`);
-        return this;
+    async safeClick(button: string = Button.LEFT, timeout?: number): Promise<void> {
+        await this.getDriver().wait(ExtestUntil.safeClick(this, button), getTimeout(timeout), `Could not perform safe click(${button}). Enabled: ${await this.isEnabled()}, Visible: ${await this.isDisplayed()}.`);
     }
 
-    async click(timeout?: number): Promise<void> {
-        await this.waitInteractive(timeout);
-        await this.getDriver().wait(async () => {
-            try {
-                await super.click();
-                return true;
-            }
-            catch (e) {
-                if(e.name === 'ElementClickInterceptedError' || (e.name === 'WebDriverError' && e.message.includes('element click intercepted: Element'))) {
-                    return false;
-                }
-                throw e;
-            }
-        }, timeout);
+    async safeDoubleClick(button: string = Button.LEFT, timeout?: number): Promise<void> {
+        await this.getDriver().wait(ExtestUntil.elementInteractive(this), getTimeout(timeout)); 
+        await this.getDriver().actions().doubleClick(this, button).perform();
     }
 
-    async sendKeys(...var_args: (string | number | Promise<string | number>)[]): Promise<void> {
-        await this.waitInteractive();
-        await super.sendKeys(...var_args);
+    async safeSendKeys(timeout?: number, ...var_args: (string | number | Promise<string | number>)[]): Promise<void> {
+        await this.getDriver().wait(ExtestUntil.safeSendKeys(this, ...var_args), getTimeout(timeout));
     }
 
     /**
@@ -108,4 +91,53 @@ export abstract class AbstractElement extends WebElement {
         AbstractElement.driver = driver;
         AbstractElement.versionInfo = { version: version, browser: browser };
     }
+}
+
+function findParent(element?: WebElement | Locator): WebElement | WebElementPromise {
+    const driver = SeleniumBrowser.instance.driver;
+    if (element == null) {
+        return driver.wait(until.elementLocated(By.css('html')), getTimeout());
+    }
+    else if (element instanceof WebElement || element instanceof WebElementPromise) {
+        return element;
+    }
+    else {
+        return driver.wait(until.elementLocated(element), getTimeout());
+    }
+}
+
+async function findElement(parent: Locator | WebElement | undefined, base: Locator): Promise<[string, WebElement]> {
+    let parentElement = await findParent(parent);
+
+    const element = await repeat(async () => {
+        try {
+            return await parentElement.findElement(base);
+        }
+        catch (e) {
+            if (e.name === 'StaleElementReferenceError') {
+                if (parent instanceof WebElement) {
+                    throw new Error(`StaleElementReferenceError of parent element. Try using locator.\n${e}`);
+                }
+                parentElement = await findParent(parent);
+            }
+
+            if (e.message.includes('Invalid locator')) {
+                throw new StopRepeat(`Invalid locator: toString(${base.toString()}), class(${base?.constructor?.name}), keys(${Object.keys(base).join(', ')}}).`);
+            }
+
+            return undefined;
+        }
+    }, {
+        timeout: getTimeout(),
+        id: 'AbstractElement.findElement',
+        message: errorHelper('Could not find element', base, parent)
+    });
+    return [await element!.getId(), parentElement];
+}
+
+function errorHelper(e: Error | string, base: WebElement | Locator, enclosingItem: WebElement | Locator | undefined): string {
+    const message = e instanceof Error ? e.message : e;
+    const baseMessage = base?.constructor?.name || `WebElement: ${base instanceof WebElement}`;
+    const parentMessage = enclosingItem?.constructor?.name || `WebElement: ${enclosingItem instanceof WebElement}`;
+    return `${message}: Base locator: ${baseMessage}, Parent locator: ${parentMessage}`;
 }

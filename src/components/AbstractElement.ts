@@ -95,18 +95,26 @@ export abstract class AbstractElement extends WebElement {
 
 function findParent(element?: WebElement | Locator): WebElement | WebElementPromise {
     const driver = SeleniumBrowser.instance.driver;
+    const timeout = getTimeout();
     if (element == null) {
-        return driver.wait(until.elementLocated(By.css('html')), getTimeout());
+        if (timeout > 0) {
+            return driver.wait(until.elementLocated(By.css('html')), timeout);
+        }
+        return driver.findElement(By.css('html'));
     }
     else if (element instanceof WebElement || element instanceof WebElementPromise) {
         return element;
     }
     else {
-        return driver.wait(until.elementLocated(element), getTimeout());
+        if (timeout > 0) {
+            return driver.wait(until.elementLocated(element), timeout);
+        }
+        return driver.findElement(element);
     }
 }
 
 async function findElement(parent: Locator | WebElement | undefined, base: Locator): Promise<[string, WebElement]> {
+    const timeout = getTimeout();
     let parentElement = await findParent(parent);
 
     const element = await repeat(async () => {
@@ -114,6 +122,10 @@ async function findElement(parent: Locator | WebElement | undefined, base: Locat
             return await parentElement.findElement(base);
         }
         catch (e) {
+            if (timeout === 0) {
+                throw new StopRepeat(e);
+            }
+
             if (e.name === 'StaleElementReferenceError') {
                 if (parent instanceof WebElement) {
                     throw new Error(`StaleElementReferenceError of parent element. Try using locator.\n${e}`);

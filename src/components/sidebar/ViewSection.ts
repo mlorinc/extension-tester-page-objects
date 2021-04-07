@@ -81,7 +81,7 @@ export abstract class IViewSection extends AbstractElement {
      * @param label label/title of the button
      * @returns ViewPanelAction object
      */
-    abstract getAction(label: string): IViewPanelAction;
+    abstract getAction(label: string): Promise<IViewPanelAction>;
 }
 
 /**
@@ -91,5 +91,5 @@ export interface IViewPanelAction extends AbstractElement {
     /**
      * Get label of the action button
      */
-    getLabel(): string;
+    getLabel(): Promise<string>;
 }

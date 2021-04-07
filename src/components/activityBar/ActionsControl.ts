@@ -7,5 +7,5 @@ export interface IActionsControl extends IElementWithContextMenu {
     /**
      * Returns the title of the associated action
      */
-    getTitle(): string;
+    getTitle(): Promise<string>;
 }

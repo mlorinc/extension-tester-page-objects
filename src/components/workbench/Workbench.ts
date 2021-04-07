@@ -9,6 +9,7 @@ import { ISettingsEditor } from '../editor/settings/SettingsEditor';
 import { ISideBarView } from '../sidebar/SideBarView';
 import { IStatusBar } from '../statusBar/StatusBar';
 import { ITitleBar } from '../menu/TitleBar';
+import { IEditor } from '../editor/Editor';
 
 /**
  * Handler for general workbench related actions
@@ -62,6 +63,22 @@ export interface IWorkbench extends AbstractElement {
      * @returns promise that resolves to a SettingsEditor instance
      */
     openSettings(): Promise<ISettingsEditor>;
+
+    /**
+     * Open file and return its editor. Relative paths are resolved to absolute paths based on current open folder.
+     * @param path path to file.
+     * @param handleOnly if handleOnly is set to true, library is responsible for entire open procedure 
+     * @returns editor instance with open file
+     */
+    openFile(filePath: string, handleOnly?: boolean): Promise<IEditor>;
+
+    /**
+     * Open folder. Relative paths are resolved to absolute paths based on current open folder.
+     * @param folderPath path to folder
+     * @param handleOnly if handleOnly is set to true, library is responsible for entire open procedure  
+     * @returns promise which is resolved when workbench is ready
+     */
+    openFolder(folderPath: string, handleOnly?: boolean): Promise<void>;
 
     /**
      * Open the VS Code command line prompt

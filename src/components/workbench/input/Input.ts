@@ -61,7 +61,7 @@ export interface IInput extends AbstractElement {
      * @param indexOrText index (number) or text (string) of the item to search by
      * @returns Promise resolvnig to QuickPickItem if found, to undefined otherwise
      */
-    findQuickPick(indexOrText: string | number): Promise<QuickPickItem | undefined>;
+    findQuickPick(indexOrText: string | number): Promise<IQuickPickItem | undefined>;
 
     /**
      * Retrieve the title of an input box if it has one
@@ -86,13 +86,13 @@ export interface IInput extends AbstractElement {
      * (visible in the quick pick menu)
      * @returns Promise resolving to array of QuickPickItem objects
      */
-    getQuickPicks(): Promise<QuickPickItem[]>;
+    getQuickPicks(): Promise<IQuickPickItem[]>;
 }
 
 /**
  * Page object representing a quick pick option in the input box
  */
-export interface QuickPickItem extends AbstractElement {
+export interface IQuickPickItem extends AbstractElement {
     /**
      * Get the label of the quick pick item
      */
@@ -106,7 +106,7 @@ export interface QuickPickItem extends AbstractElement {
     /**
      * Get the index of the quick pick item
      */
-    getIndex(): number;
+    getIndex(): Promise<number>;
 
     /**
      * Select (click) the quick pick item

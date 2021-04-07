@@ -32,5 +32,5 @@ export interface IViewTitlePart extends IElementWithContextMenu {
     /**
      * Get title of the button
      */
-    getTitle(): string;
+    getTitle(): Promise<string>;
  }

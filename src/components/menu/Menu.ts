@@ -1,4 +1,5 @@
 import { AbstractElement } from '../AbstractElement';
+import { IMenuItem } from './MenuItem';
 
 /**
  * Abstract element representing a menu
@@ -16,13 +17,13 @@ export interface IMenu extends AbstractElement {
      * Return a menu item of a given name, undefined if not found
      * @param name name of the item to search for
      */
-    getItem(name: string): Promise<IMenu>;
+    getItem(name: string): Promise<IMenuItem | undefined>;
 
     /**
      * Get all items of a menu
      * @returns array of MenuItem object representing the menu items
      */
-    getItems(): Promise<IMenu[]>;
+    getItems(): Promise<IMenuItem[]>;
 
     /**
      * Recursively select an item with a given path.
@@ -39,8 +40,5 @@ export interface IMenu extends AbstractElement {
      * its submenu otherwise
      */
     select(...path: string[]): Promise<IMenu | undefined>;
-
-    getLabel(): Promise<string>;
-
     close(): Promise<void>;
 }

@@ -1,4 +1,5 @@
 import { IMenu } from './Menu';
+import { IMenuItem } from './MenuItem';
 import { IWindowControls } from './WindowControls';
 
 /**
@@ -10,13 +11,13 @@ export interface ITitleBar extends IMenu {
      * @param name name of the item to search by
      * @returns Promise resolving to TitleBarItem object
      */
-    getItem(name: string): Promise<IMenu>;
+    getItem(name: string): Promise<IMenuItem>;
 
     /**
      * Get all title bar items
      * @returns Promise resolving to array of TitleBarItem objects
      */
-    getItems(): Promise<IMenu[]>;
+    getItems(): Promise<IMenuItem[]>;
 
     /**
      * Get the window title

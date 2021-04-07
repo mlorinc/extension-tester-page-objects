@@ -66,6 +66,6 @@ export interface CenterNotification extends INotification {
 /**
  * Notification button
  */
-interface NotificationButton extends AbstractElement {
-    getTitle(): string;
+export interface NotificationButton extends AbstractElement {
+    getTitle(): Promise<string>;
 }

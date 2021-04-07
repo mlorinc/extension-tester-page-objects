@@ -20,5 +20,5 @@ export interface IViewControl extends IElementWithContextMenu {
     /**
      * Returns the title of the associated view
      */
-    getTitle(): string;
+    getTitle(): Promise<string>;
 }

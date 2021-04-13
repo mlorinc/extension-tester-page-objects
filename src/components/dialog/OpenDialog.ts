@@ -1,9 +1,17 @@
-import { INativeDialog } from "./NativeDialog";
-
 /**
  * General open native dialog
  */
- export interface IOpenDialog extends INativeDialog {
+ export interface IOpenDialog {
+    /**
+     * Confirms the dialog
+     */
+     confirm(): void | Promise<void>;
+
+     /**
+      * Cancels the dialog
+      */
+     cancel(): void | Promise<void>;
+
     /**
      * Enters the given path into the dialog selection
      * @param path path to select

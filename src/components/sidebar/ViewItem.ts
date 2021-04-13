@@ -1,5 +1,4 @@
 import { AbstractElement } from '../AbstractElement';
-import { By, WebElement } from 'selenium-webdriver';
 import { IElementWithContextMenu } from '../ElementWithContextMenu';
 
 /**
@@ -68,12 +67,6 @@ export interface ITreeItem extends IViewItem {
      * @returns ViewItemAction object if such button exists, undefined otherwise
      */
     getActionButton(label: string): Promise<IViewItemAction | undefined>;
-
-    /**
-     * Find all child elements of a tree item
-     * @param locator locator of a given type of tree item
-     */
-    getChildItems(locator: By): Promise<WebElement[]>;
 }
 
 /**

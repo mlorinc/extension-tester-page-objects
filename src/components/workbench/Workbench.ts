@@ -9,12 +9,23 @@ import { ISettingsEditor } from '../editor/settings/SettingsEditor';
 import { ISideBarView } from '../sidebar/SideBarView';
 import { IStatusBar } from '../statusBar/StatusBar';
 import { ITitleBar } from '../menu/TitleBar';
-import { IEditor } from '../editor/Editor';
+import { IOpenDialog } from '../dialog/OpenDialog';
 
 /**
  * Handler for general workbench related actions
  */
 export interface IWorkbench extends AbstractElement {
+
+    /**
+     * Get path of open folder/workspace
+     */
+    getOpenFolderPath(): Promise<string>;
+
+    /**
+     * Get name of open folder/workspace
+     */
+    getOpenFolderName(): Promise<string | undefined>;
+
     /**
      * Get a title bar handle
      */
@@ -65,20 +76,17 @@ export interface IWorkbench extends AbstractElement {
     openSettings(): Promise<ISettingsEditor>;
 
     /**
-     * Open file and return its editor. Relative paths are resolved to absolute paths based on current open folder.
-     * @param path path to file.
-     * @param handleOnly if handleOnly is set to true, library is responsible for entire open procedure 
-     * @returns editor instance with open file
-     */
-    openFile(filePath: string, handleOnly?: boolean): Promise<IEditor>;
-
-    /**
      * Open folder. Relative paths are resolved to absolute paths based on current open folder.
      * @param folderPath path to folder
-     * @param handleOnly if handleOnly is set to true, library is responsible for entire open procedure  
      * @returns promise which is resolved when workbench is ready
      */
-    openFolder(folderPath: string, handleOnly?: boolean): Promise<void>;
+    openFolder(folderPath: string): Promise<void>;
+
+    /**
+     * Close open folder.
+     * @returns promise which is resolved when folder is closed
+     */
+    closeFolder(): Promise<void>;
 
     /**
      * Open the VS Code command line prompt
@@ -92,4 +100,9 @@ export interface IWorkbench extends AbstractElement {
      * @returns Promise resolving when the command prompt is confirmed
      */
     executeCommand(command: string): Promise<void>;
+
+    /**
+     * Return existing open dialog object.
+     */
+    getOpenDialog(): Promise<IOpenDialog>;
 }

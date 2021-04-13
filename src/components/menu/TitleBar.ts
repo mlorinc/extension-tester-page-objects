@@ -11,7 +11,7 @@ export interface ITitleBar extends IMenu {
      * @param name name of the item to search by
      * @returns Promise resolving to TitleBarItem object
      */
-    getItem(name: string): Promise<IMenuItem>;
+    getItem(name: string): Promise<IMenuItem | undefined>;
 
     /**
      * Get all title bar items

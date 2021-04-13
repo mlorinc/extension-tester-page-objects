@@ -114,7 +114,6 @@ function findParent(element?: WebElement | Locator): WebElement | WebElementProm
 }
 
 async function findElement(parent: Locator | WebElement | undefined, base: Locator): Promise<[string, WebElement]> {
-    const timeout = getTimeout();
     let parentElement = await findParent(parent);
 
     const element = await repeat(async () => {
@@ -122,10 +121,6 @@ async function findElement(parent: Locator | WebElement | undefined, base: Locat
             return await parentElement.findElement(base);
         }
         catch (e) {
-            if (timeout === 0) {
-                throw new StopRepeat(e);
-            }
-
             if (e.name === 'StaleElementReferenceError') {
                 if (parent instanceof WebElement) {
                     throw new Error(`StaleElementReferenceError of parent element. Try using locator.\n${e}`);

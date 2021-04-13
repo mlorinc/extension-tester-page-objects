@@ -1,4 +1,4 @@
-import { Rejecter, Resolver, TimeoutPromise } from './TimeoutPromise';
+import { Rejecter, Resolver, TimeoutError, TimeoutPromise } from './TimeoutPromise';
 
 export interface RepeatArguments {
 	/**
@@ -42,7 +42,7 @@ class FalseValue extends Error {
  * @param options repeat options
  */
 export async function repeat<T>(func: (() => T | PromiseLike<T>), options?: RepeatArguments): Promise<T> {
-	const { count, timeout } = options || { count: undefined, timeout: undefined };
+	let { count, timeout } = options || { count: undefined, timeout: undefined };
 	let run = true;
 	let start = 0;
 	const id = options?.id || "anonymous";
@@ -55,9 +55,14 @@ export async function repeat<T>(func: (() => T | PromiseLike<T>), options?: Repe
 		throw new Error("Count must be larger than 0");
 	}
 
+	if (timeout === 0 && count === undefined) {
+		count = 1;
+		timeout = undefined;
+	}
+
 	async function closure(cnt: number | undefined, resolve: Resolver<T>, reject: Rejecter) {
 		if (cnt !== undefined && cnt === 0) {
-			reject(new Error(`[${id}] Cannot repeat function more than ${count} times.`));
+			reject(new TimeoutError(`[${id}] Cannot repeat function more than ${count} times.`));
 			return;
 		}
 		try {
@@ -95,6 +100,7 @@ export async function repeat<T>(func: (() => T | PromiseLike<T>), options?: Repe
 			}
 		}
 	}
+
 	return new TimeoutPromise<T>((resolve, reject) => {
 		setImmediate(closure, count, resolve, reject);
 	}, timeout, {

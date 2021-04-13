@@ -8,6 +8,17 @@ export interface TimeoutPromiseOptions {
 	id?: string;
 }
 
+export class TimeoutError extends Error {
+	constructor(message?: string, id?: string) {
+		if (message) {
+			super(message);
+		}
+		else {
+			super(`Promise(id=${id}) timed out after 1 cycle (zero timeout).`)
+		}
+	}
+}
+
 class TimeoutPromise<T> extends Promise<T> {
 
 	public constructor(executor: Executor<T>, timeout?: number, options?: TimeoutPromiseOptions) {
@@ -38,7 +49,7 @@ class TimeoutPromise<T> extends Promise<T> {
 						message += ` Reason: ${options.message}`;
 					}
 
-					reject(new Error(message));
+					reject(new TimeoutError(message));
 					if (options?.onTimeout) {
 						options?.onTimeout();
 					}

@@ -17,6 +17,7 @@ export * from './components/sidebar/ViewContent';
 export * from './components/sidebar/ViewSection';
 export * from './components/sidebar/ViewItem';
 
+export * from './components/sidebar/tree/TreeSection';
 export * from './components/sidebar/tree/default/DefaultTreeSection';
 export * from './components/sidebar/tree/default/DefaultTreeItem';
 export * from './components/sidebar/tree/custom/CustomTreeSection';
@@ -56,7 +57,6 @@ export * from './components/workbench/input/InputBox';
 export * from './components/workbench/Workbench';
 
 export * from './components/dialog/ModalDialog';
-export * from './components/dialog/NativeDialog';
 export * from './components/dialog/OpenDialog';
 
 export * from './conditions/until';
@@ -65,3 +65,4 @@ export * from './conditions/Repeat';
 
 export * from './SeleniumBrowser';
 export * from './TestRunner';
+export * from './utils/PathUtils';

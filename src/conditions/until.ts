@@ -23,7 +23,12 @@ export namespace ExtestUntil {
         const fn = async function (driver: WebDriver): Promise<WebElement | undefined> {
             try {
                 if (await isInteractive(element)) {
-                    await driver.actions().click(element, button).perform();
+                    if (button === Button.LEFT) {
+                        await element.click();
+                    }
+                    else {
+                        await driver.actions().click(element, button).perform();
+                    }
                     return element;
                 }
                 else {

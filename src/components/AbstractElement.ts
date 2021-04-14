@@ -8,7 +8,7 @@ import {
     WebElement,
     WebElementPromise
 } from 'selenium-webdriver';
-import { repeat, StopRepeat } from '../conditions/Repeat';
+import { repeat } from '../conditions/Repeat';
 import { ExtestUntil } from '../conditions/until';
 import { getTimeout, SeleniumBrowser } from '../SeleniumBrowser';
 
@@ -129,9 +129,8 @@ async function findElement(parent: Locator | WebElement | undefined, base: Locat
             }
 
             if (e.message.includes('Invalid locator')) {
-                throw new StopRepeat(`Invalid locator: toString(${base.toString()}), class(${base?.constructor?.name}), keys(${Object.keys(base).join(', ')}}).`);
+                throw new Error(`Invalid locator: toString(${base.toString()}), class(${base?.constructor?.name}), keys(${Object.keys(base).join(', ')}}).`);
             }
-
             return undefined;
         }
     }, {

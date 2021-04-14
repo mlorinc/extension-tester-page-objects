@@ -16,6 +16,7 @@ export class TimeoutError extends Error {
 		else {
 			super(`Promise(id=${id}) timed out after 1 cycle (zero timeout).`)
 		}
+		this.name = 'TimeoutError';
 	}
 }
 
@@ -41,7 +42,11 @@ class TimeoutPromise<T> extends Promise<T> {
 			let timer: NodeJS.Timeout | null = null;
 			const id = options?.id || "anonymous";
 
-			if (timeout !== undefined) {
+			if (typeof timeout === 'number' && timeout < 0) {
+				throw new Error('Timeout cannot be negative.');
+			}
+
+			if (timeout !== undefined && timeout !== 0) {
 				const start = Date.now();
 				timer = setTimeout(() => {
 					let message = `Promise(id=${id}) timed out after ${Date.now() - start}ms.`;

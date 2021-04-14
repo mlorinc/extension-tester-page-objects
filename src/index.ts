@@ -6,6 +6,7 @@ export * from './components/menu/Menu';
 export * from './components/menu/MenuItem';
 export * from './components/menu/TitleBar';
 export * from './components/menu/WindowControls';
+export * from './components/ElementWithContextMenu';
 
 export * from './components/activityBar/ActivityBar';
 export * from './components/activityBar/ViewControl';

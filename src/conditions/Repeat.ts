@@ -26,15 +26,6 @@ export interface RepeatArguments {
 	id?: string;
 }
 
-export class StopRepeat extends Error {
-	constructor(error: string | Error) {
-		super(error instanceof Error ? error.message : error);
-	}
-}
-
-class FalseValue extends Error {
-}
-
 /**
  * Repeat function until it returns truthy value.
  * 
@@ -70,7 +61,6 @@ export async function repeat<T>(func: (() => T | PromiseLike<T>), options?: Repe
 			if (value && ((start !== 0 && Date.now() - start >= threshold) || (threshold === 0))) {
 				resolve(value);
 				log("Threshold reached");
-				return;
 			}
 			else if (value) {
 				if (start === 0) {
@@ -78,26 +68,16 @@ export async function repeat<T>(func: (() => T | PromiseLike<T>), options?: Repe
 				}
 				log("Threshold not reached");
 				setImmediate(closure, cnt, resolve, reject);
-				return;
 			}
 			else {
 				start = 0;
-				throw new FalseValue(`Value does not have truthy value - ${value}`);
+				if (run) {
+					setImmediate(closure, cnt !== undefined ? cnt - 1 : undefined, resolve, reject);
+				}
 			}
 		}
 		catch (e) {
-			if (e instanceof StopRepeat) {
-				reject(e);
-				return;
-			}
-
-			if ((e instanceof FalseValue) === false) {
-				log(e, console.error);
-			}
-
-			if (run) {
-				setImmediate(closure, cnt !== undefined ? cnt - 1 : undefined, resolve, reject);
-			}
+			reject(e);
 		}
 	}
 

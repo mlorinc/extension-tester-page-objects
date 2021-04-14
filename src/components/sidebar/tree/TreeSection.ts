@@ -15,5 +15,6 @@ export class TreeItemNotFound extends Error {
     constructor(path: string[], message ?: string) {
         message = `Could not find tree item with path "${path.join('/')}". ${message}`
         super(message.trimEnd());
+        this.name = 'TreeItemNotFound';
     }
 }

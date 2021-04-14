@@ -67,4 +67,66 @@ export module PathUtils {
         }
         return filePath.slice(0, end);
     }
+
+
+    function compare(a: string[], b: string[], parentIndex: number, aIsFile: boolean, bIsFile: boolean): number {
+        const leafIndex = parentIndex + 1;
+        aIsFile = isFile(a, leafIndex, aIsFile);
+        bIsFile = isFile(b, leafIndex, bIsFile);
+
+        if (aIsFile === bIsFile) {
+            return a[leafIndex].localeCompare(b[leafIndex]);
+        }
+
+        if (isFile(a, leafIndex, aIsFile)) {
+            return 1;
+        }
+        else {
+            return -1;
+        }
+    }
+
+    function isLeaf(a: string[], index: number): boolean {
+        return a.length === index + 1;
+    }
+
+    function isFile(a: string[], index: number, isFileFlag: boolean): boolean {
+        return isLeaf(a, index) && isFileFlag;
+    }
+
+    export function comparePaths(a: string[], b: string[], aIsFile: boolean = false, bIsFile: boolean = false): number {
+        if (a.length === 0) {
+            throw new Error('Path "a" must not be empty');
+        }
+
+        if (b.length === 0) {
+            throw new Error('Path "b" must not be empty');
+        }
+
+        const aSegments = a
+        const bSegments = b;
+
+        const length = Math.min(aSegments.length, bSegments.length);
+
+        let matches = 0;
+        while (matches < length) {
+            if (aSegments[matches] !== bSegments[matches]) {
+                break;
+            }
+            matches += 1;
+        }
+
+        const commonParentIndex = matches > 0 ? matches - 1 : -1; 
+
+        // check folder is parent
+        if (matches === length) {
+            return aSegments.length - bSegments.length;
+        }
+
+        return compare(aSegments, bSegments, commonParentIndex, aIsFile, bIsFile);
+    }
+
+    export async function comparePathsString(a: string, b: string, aIsFile: boolean = false, bIsFile: boolean = false): Promise<number> {
+        return PathUtils.comparePaths(PathUtils.convertToTreePath(a), PathUtils.convertToTreePath(b), aIsFile, bIsFile);
+    }
 }

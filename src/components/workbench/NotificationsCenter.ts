@@ -1,5 +1,5 @@
 import { AbstractElement } from '../AbstractElement';
-import { INotification } from './Notification';
+import { INotification, NotificationType } from './Notification';
 
 /**
  * Notifications center page object
@@ -25,5 +25,5 @@ export interface INotificationsCenter extends AbstractElement {
      * 
      * @returns Promise resolving to array of Notification objects
      */
-    getNotifications<T>(type: T): Promise<INotification[]>;
+    getNotifications(type: NotificationType): Promise<INotification[]>;
 }

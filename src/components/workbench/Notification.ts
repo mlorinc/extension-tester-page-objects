@@ -2,6 +2,16 @@ import { AbstractElement } from '../AbstractElement';
 import { IElementWithContextMenu } from '../ElementWithContextMenu';
 
 /**
+ * Available types of notifications
+ */
+ export enum NotificationType {
+    Info = 'info',
+    Warning = 'warning',
+    Error = 'error',
+    Any = 'any'
+}
+
+/**
  * Abstract element representing a notification
  */
 export interface INotification extends IElementWithContextMenu {
@@ -16,7 +26,7 @@ export interface INotification extends IElementWithContextMenu {
      * Get the type of the notification
      * @returns Promise resolving to NotificationType
      */
-    getType<T>(): Promise<T>;
+    getType(): Promise<NotificationType>;
 
     /**
      * Get the source of the notification as text
@@ -41,7 +51,7 @@ export interface INotification extends IElementWithContextMenu {
      * of NotificationButton objects
      * @returns Promise resolving to array of NotificationButton objects
      */
-    getActions(): Promise<NotificationButton[]>;
+    getActions(): Promise<INotificationButton[]>;
 
     /**
      * Click on an action button with the given title
@@ -54,18 +64,18 @@ export interface INotification extends IElementWithContextMenu {
 /**
  * Notification displayed on its own in the notifications-toasts container
  */
-export interface StandaloneNotification extends INotification {
+export interface IStandaloneNotification extends INotification {
 }
 
 /**
  * Notification displayed within the notifications center
  */
-export interface CenterNotification extends INotification {
+export interface ICenterNotification extends INotification {
 }
 
 /**
  * Notification button
  */
-export interface NotificationButton extends AbstractElement {
+export interface INotificationButton extends AbstractElement {
     getTitle(): Promise<string>;
 }

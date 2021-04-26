@@ -70,6 +70,16 @@ export module PathUtils {
 
 
     function compare(a: string[], b: string[], parentIndex: number, aIsFile: boolean, bIsFile: boolean): number {
+        if (isRoot(a) && isRoot(b)) {
+            return 0;
+        }
+        else if (isRoot(a)) {
+            return -1;
+        }
+        else if(isRoot(b)) {
+            return 1;
+        }
+
         const leafIndex = parentIndex + 1;
         aIsFile = isFile(a, leafIndex, aIsFile);
         bIsFile = isFile(b, leafIndex, bIsFile);
@@ -84,6 +94,10 @@ export module PathUtils {
         else {
             return -1;
         }
+    }
+
+    function isRoot(a: string[]) {
+        return a.length === 1 && a[0] === '/';
     }
 
     function isLeaf(a: string[], index: number): boolean {

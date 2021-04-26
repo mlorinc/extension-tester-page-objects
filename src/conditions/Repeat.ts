@@ -38,6 +38,7 @@ export async function repeat<T>(func: (() => T | PromiseLike<T>), options?: Repe
 	let start = 0;
 	const id = options?.id || "anonymous";
 	const threshold = options?.threshold || 0;
+	
 	const log = options?.log ? (message: string, loggerFunction: (message: string) => void = console.log) => {
 		loggerFunction(`[${id}] ${message}`);
 	} : () => { };
@@ -51,9 +52,9 @@ export async function repeat<T>(func: (() => T | PromiseLike<T>), options?: Repe
 		timeout = undefined;
 	}
 
-	async function closure(cnt: number | undefined, resolve: Resolver<T>, reject: Rejecter) {
+	async function closure(cnt: number | undefined, resolve: Resolver<T>, reject: Rejecter, callStack: string | undefined) {
 		if (cnt !== undefined && cnt === 0) {
-			reject(new TimeoutError(`[${id}] Cannot repeat function more than ${count} times.`));
+			reject(new TimeoutError(`[${id}] Cannot repeat function more than ${count} times.\n${callStack}`));
 			return;
 		}
 		try {
@@ -77,12 +78,23 @@ export async function repeat<T>(func: (() => T | PromiseLike<T>), options?: Repe
 			}
 		}
 		catch (e) {
+			e.message += '\n' + callStack;
 			reject(e);
 		}
 	}
 
+	// get call stack
+	let callStack: string | undefined = undefined;
+	try {
+		throw new Error();
+	}
+	catch (e) {
+		callStack = (e as Error).stack;
+		callStack = callStack?.split('\n\t').join('\t\n');
+	}
+
 	return new TimeoutPromise<T>((resolve, reject) => {
-		setImmediate(closure, count, resolve, reject);
+		setImmediate(closure, count, resolve, reject, callStack);
 	}, timeout, {
 		onTimeout: () => run = false,
 		id: options?.id,

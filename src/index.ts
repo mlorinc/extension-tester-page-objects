@@ -57,6 +57,7 @@ export * from './components/workbench/input/Input';
 export * from './components/workbench/input/InputBox';
 export * from './components/workbench/Workbench';
 
+export * from './components/dialog/FileType';
 export * from './components/dialog/ModalDialog';
 export * from './components/dialog/OpenDialog';
 

@@ -10,6 +10,7 @@ import { ISideBarView } from '../sidebar/SideBarView';
 import { IStatusBar } from '../statusBar/StatusBar';
 import { ITitleBar } from '../menu/TitleBar';
 import { IOpenDialog } from '../dialog/OpenDialog';
+import { FileType } from '../dialog/FileType';
 
 /**
  * Handler for general workbench related actions
@@ -104,5 +105,5 @@ export interface IWorkbench extends AbstractElement {
     /**
      * Return existing open dialog object.
      */
-    getOpenDialog(): Promise<IOpenDialog>;
+    getOpenDialog(fileType: FileType): Promise<IOpenDialog>;
 }

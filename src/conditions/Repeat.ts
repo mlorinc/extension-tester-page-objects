@@ -36,6 +36,7 @@ export async function repeat<T>(func: (() => T | PromiseLike<T>), options?: Repe
 	let { count, timeout } = options || { count: undefined, timeout: undefined };
 	let run = true;
 	let start = 0;
+	let plannedTask: NodeJS.Immediate | undefined = undefined;
 	const id = options?.id || "anonymous";
 	const threshold = options?.threshold || 0;
 	
@@ -54,12 +55,14 @@ export async function repeat<T>(func: (() => T | PromiseLike<T>), options?: Repe
 
 	async function closure(cnt: number | undefined, resolve: Resolver<T>, reject: Rejecter, callStack: string | undefined) {
 		if (cnt !== undefined && cnt === 0) {
+			plannedTask = undefined;
 			reject(new TimeoutError(`[${id}] Cannot repeat function more than ${count} times.\n${callStack}`));
 			return;
 		}
 		try {
 			const value = await func();
 			if (value && ((start !== 0 && Date.now() - start >= threshold) || (threshold === 0))) {
+				plannedTask = undefined;
 				resolve(value);
 				log("Threshold reached");
 			}
@@ -68,17 +71,21 @@ export async function repeat<T>(func: (() => T | PromiseLike<T>), options?: Repe
 					start = Date.now();
 				}
 				log("Threshold not reached");
-				setImmediate(closure, cnt, resolve, reject);
+				plannedTask = setImmediate(closure, cnt, resolve, reject);
 			}
 			else {
 				start = 0;
 				if (run) {
-					setImmediate(closure, cnt !== undefined ? cnt - 1 : undefined, resolve, reject);
+					plannedTask = setImmediate(closure, cnt !== undefined ? cnt - 1 : undefined, resolve, reject);
+				}
+				else {
+					plannedTask = undefined;
 				}
 			}
 		}
 		catch (e) {
 			e.message += '\n' + callStack;
+			plannedTask = undefined;
 			reject(e);
 		}
 	}
@@ -94,10 +101,17 @@ export async function repeat<T>(func: (() => T | PromiseLike<T>), options?: Repe
 	}
 
 	return new TimeoutPromise<T>((resolve, reject) => {
-		setImmediate(closure, count, resolve, reject, callStack);
+		plannedTask = setImmediate(closure, count, resolve, reject, callStack);
 	}, timeout, {
-		onTimeout: () => run = false,
+		onTimeout: () => {
+			run = false;
+			if (plannedTask) {
+				clearImmediate(plannedTask);
+				plannedTask = undefined;
+			}
+		},
 		id: options?.id,
-		message: options?.message
+		message: options?.message,
+		callStack
 	});
 }

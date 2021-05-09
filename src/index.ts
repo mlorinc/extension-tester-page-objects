@@ -68,3 +68,6 @@ export * from './conditions/Repeat';
 export * from './SeleniumBrowser';
 export * from './TestRunner';
 export * from './utils/PathUtils';
+
+// drivers
+export { IWebDriverManager, createWebDriverManager } from './utils/webdrivers';

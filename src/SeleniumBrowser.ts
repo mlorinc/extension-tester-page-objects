@@ -14,9 +14,6 @@ export abstract class SeleniumBrowser {
     public abstract get screenshotsStoragePath(): string;
 
     public abstract get version(): string;
-
-    public abstract get findElementTimeout(): number;
-    public abstract set findElementTimeout(value: number);
     
     abstract start(): Promise<this>;
     abstract quit(): Promise<void>;
@@ -36,8 +33,4 @@ export abstract class SeleniumBrowser {
         fs.mkdirpSync(dir);
         fs.writeFileSync(path.join(dir, `${name}.png`), data, 'base64');
     }
-}
-
-export function getTimeout(value?: number) {
-    return value === undefined ? SeleniumBrowser.instance.findElementTimeout : value;
 }

@@ -1,6 +1,6 @@
+export * from 'selenium-webdriver';
+
 export * from './components/AbstractElement';
-export * from './locators/locators';
-export * from './locators/loader';
 
 export * from './components/menu/Menu';
 export * from './components/menu/MenuItem';
@@ -61,13 +61,5 @@ export * from './components/dialog/FileType';
 export * from './components/dialog/ModalDialog';
 export * from './components/dialog/OpenDialog';
 
-export * from './conditions/until';
-export * from './conditions/TimeoutPromise';
-export * from './conditions/Repeat';
-
 export * from './SeleniumBrowser';
 export * from './TestRunner';
-export * from './utils/PathUtils';
-
-// drivers
-export { IWebDriverManager, createWebDriverManager } from './utils/webdrivers';

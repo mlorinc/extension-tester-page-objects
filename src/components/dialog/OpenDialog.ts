@@ -5,16 +5,16 @@
     /**
      * Confirms the dialog
      */
-     confirm(): void | Promise<void>;
+    confirm(): Promise<void>;
 
-     /**
-      * Cancels the dialog
-      */
-     cancel(): void | Promise<void>;
+    /**
+     * Cancels the dialog
+     */
+    cancel(): Promise<void>;
 
     /**
      * Enters the given path into the dialog selection
      * @param path path to select
      */
-    selectPath(path: string): void | Promise<void>;
+    selectPath(path: string): Promise<void>;
 }

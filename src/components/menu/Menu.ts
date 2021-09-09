@@ -40,5 +40,4 @@ export interface IMenu extends AbstractElement {
      * its submenu otherwise
      */
     select(...path: string[]): Promise<IMenu | undefined>;
-    close(): Promise<void>;
 }

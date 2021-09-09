@@ -12,9 +12,4 @@ export interface IMenuItem extends AbstractElement {
      * Returns the label of the menu item
      */
     getLabel(): Promise<string>;
-
-    /**
-     * Returns true if menu has sub menus.
-     */
-    isNesting(): Promise<boolean>
 }

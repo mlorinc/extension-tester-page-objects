@@ -1,6 +1,6 @@
 import { AbstractElement } from '../../AbstractElement';
 import { IScmChange } from './ScmChange';
-import { IMenu } from '../../menu/Menu';
+import { IContextMenu } from '../../..';
 
 /**
  * Page object representing a repository in the source control view
@@ -28,7 +28,7 @@ export interface IScmProvider extends AbstractElement {
      * Open a context menu using the 'More Actions...' button
      * @returns Promise resolving to a ContextMenu object
      */
-    openMoreActions(): Promise<IMenu>;
+    openMoreActions(): Promise<IContextMenu>;
 
     /**
      * Fill in the message field and send ctrl/cmd + enter to commit the changes

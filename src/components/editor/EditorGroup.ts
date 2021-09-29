@@ -1,3 +1,4 @@
+import { WebElement } from '../..';
 import { AbstractElement } from '../AbstractElement';
 import { IEditor } from './Editor';
 import { IEditorTab } from './EditorTab';
@@ -50,4 +51,17 @@ export interface IEditorGroup extends AbstractElement {
      * @returns promise resolving to EditorTab object, undefined if no tab is active
      */
     getActiveTab(): Promise<IEditorTab | undefined>;
+
+    /**
+     * Retrieve the editor action buttons as WebElements
+     * @returns promise resolving to list of WebElement objects
+     */
+    getActions(): Promise<WebElement[]>;
+
+    /**
+     * Find an editor action button by title
+     * @param title title of the button
+     * @returns promise resolving to WebElement representing the button if found, undefined otherwise
+     */
+    getAction(title: string): Promise<WebElement | undefined>;
 }

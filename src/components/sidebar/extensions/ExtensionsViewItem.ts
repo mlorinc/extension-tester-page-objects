@@ -1,5 +1,5 @@
 import { IViewItem } from '../ViewItem';
-import { IMenu } from '../../menu/Menu';
+import { IContextMenu } from '../../..';
 
 /**
  * Page object representing an extension in the extensions view
@@ -38,7 +38,7 @@ export interface IExtensionsViewItem extends IViewItem {
      * Open the management context menu if the extension is installed
      * @returns Promise resolving to ContextMenu object
      */
-    manage(): Promise<IMenu>;
+    manage(): Promise<IContextMenu>;
 
     /**
      * Install the extension if not installed already.

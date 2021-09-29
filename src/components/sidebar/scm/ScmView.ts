@@ -1,7 +1,6 @@
 import { IElementWithContextMenu } from '../../ElementWithContextMenu';
 import { IScmProvider } from './ScmProvider';
 import { ISideBarView } from '../SideBarView';
-import { IMenu } from '../../menu/Menu';
 
 /**
  * Page object representing the Source Control view
@@ -29,5 +28,4 @@ export interface IScmView extends ISideBarView {
 }
 
 export interface IMoreAction extends IElementWithContextMenu {
-    openContextMenu(): Promise<IMenu>;
 }

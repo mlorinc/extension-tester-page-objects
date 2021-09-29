@@ -1,3 +1,4 @@
+import { WebElement } from '../..';
 import { AbstractElement } from '../AbstractElement';
 import { IEditor } from './Editor';
 import { IEditorGroup } from './EditorGroup';
@@ -71,4 +72,18 @@ export interface IEditorView extends AbstractElement {
      * @returns promise resolving to an EditorGroup object
      */
     getEditorGroup(index: number): Promise<IEditorGroup>;
+
+    /**
+     * Get editor actions of a select editor group
+     * @param groupIndex zero based index of the editor group (leftmost group has index 0), default 0
+     * @returns promise resolving to list of WebElement objects
+     */
+    getActions(groupIndex?: number): Promise<WebElement[]>;
+
+    /**
+     * Get editor action of a select editor group, search by title
+     * @param groupIndex zero based index of the editor group (leftmost group has index 0), default 0
+     * @returns promise resolving to WebElement object if found, undefined otherwise
+     */
+    getAction(title: string, groupIndex?: number): Promise<WebElement | undefined>;
 }

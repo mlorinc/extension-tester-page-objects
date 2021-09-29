@@ -4,6 +4,7 @@ export * from './components/AbstractElement';
 
 export * from './components/menu/Menu';
 export * from './components/menu/MenuItem';
+export * from './components/menu/ContextMenu';
 export * from './components/menu/TitleBar';
 export * from './components/menu/WindowControls';
 export * from './components/ElementWithContextMenu';

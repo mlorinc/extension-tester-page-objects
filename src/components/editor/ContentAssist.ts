@@ -1,16 +1,16 @@
-import { IMenu } from '../menu/Menu';
+import { IContextMenu } from '../..';
 import { IMenuItem } from '../menu/MenuItem';
 
 /**
  * Page object representing the content assistant
  */
-export interface IContentAssist extends IMenu {
+export interface IContentAssist extends IContextMenu {
     /**
      * Get content assist item by name/text
      * @param name name/text to search by
      * @returns Promise resolving to ContentAssistItem object
      */
-    getItem(name: string): Promise<IMenuItem>;
+    getItem(name: string): Promise<IMenuItem | undefined>;
 
     /**
      * Get all visible content assist items

@@ -72,9 +72,9 @@ export interface IViewSection extends AbstractElement {
     /**
      * Retrieve an action button on the sections's header by its label
      * @param label label/title of the button
-     * @returns ViewPanelAction object
+     * @returns ViewPanelAction object or undefined
      */
-    getAction(label: string): Promise<IViewPanelAction>;
+    getAction(label: string): Promise<IViewPanelAction | undefined>;
 }
 
 /**

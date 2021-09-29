@@ -16,9 +16,9 @@ export interface IActivityBar extends IElementWithContextMenu {
     /**
      * Find a view container with a given title
      * @param name title of the view
-     * @returns ViewControl object representing the view selector
+     * @returns ViewControl object representing the view selector or undefined
      */
-    getViewControl(name: string): Promise<IViewControl>;
+    getViewControl(name: string): Promise<IViewControl | undefined>;
 
     /**
      * Find all global action controls displayed on the bottom of the activity bar
@@ -29,7 +29,7 @@ export interface IActivityBar extends IElementWithContextMenu {
     /**
      * Find an action control with a given title
      * @param name title of the global action
-     * @returns ActionsControl object representing the action selector
+     * @returns ActionsControl object representing the action selector or undefined
      */
-    getGlobalAction(name: string): Promise<IActionsControl>;
+    getGlobalAction(name: string): Promise<IActionsControl | undefined>;
 }

@@ -1,6 +1,6 @@
 import { IEditor } from '../Editor';
 import { ISetting } from './Setting';
-import { IMenu } from '../../menu/Menu';
+import { IContextMenu } from '../../..';
 
 /**
  * Page object representing the internal VSCode settings editor
@@ -33,5 +33,5 @@ export interface ISettingsEditor extends IEditor {
     /**
      * Context menu is disabled in this editor, throw an error
      */
-    openContextMenu(): Promise<IMenu>;
+    openContextMenu(): Promise<IContextMenu>;
 }

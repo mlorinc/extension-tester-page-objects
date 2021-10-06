@@ -1,4 +1,9 @@
 export * from 'selenium-webdriver';
+export * as chrome from 'selenium-webdriver/chrome';
+export * as opera from 'selenium-webdriver/opera';
+export * as firefox from 'selenium-webdriver/firefox';
+export * as edge from 'selenium-webdriver/edge';
+export * as safari from 'selenium-webdriver/safari';
 
 export * from './components/AbstractElement';
 

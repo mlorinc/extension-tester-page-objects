@@ -1,11 +1,12 @@
 # extension-tester-page-objects
 
-This repository contains core API (typescript interfaces and abstract classes)
-for [vscode-extension-tester](https://github.com/redhat-developer/vscode-extension-tester)
-and [theia-extension-tester](https://github.com/mlorinc/theia-extension-tester).
+This repository contains page object common API
+for [Monaco](https://microsoft.github.io/monaco-editor/) based editors.
+The common API was created to achieve compatibility between testers
+so it is possible to share created tests.
 
-## Install instructions
+At this moment the page object API is suited for Visual Studio Code and Eclipse Theia editors.
 
-1. `git clone git@github.com:mlorinc/extension-tester-page-objects.git`
-1. `npm install`
-1. `npm pack`
+## New features
+
+When proposing new features please bear in mind it must be useable in all supported testers. Currently theia-extension-tester and vscode-extension-tester are supported testers.
